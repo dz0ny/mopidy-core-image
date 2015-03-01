@@ -1,0 +1,34 @@
+##
+# Ansible playbook for MopidyCore
+#
+
+---
+- hosts: all
+  user: root
+  gather_facts: False
+
+  tasks:
+
+    - name: General | Set hostname
+      hostname: name=mopidy
+
+    - name: General | Install required repos.
+      apt_repository: repo='{{ item }}' state=present update_cache=yes
+      with_items:
+        - "deb http://apt.mopidy.com/ stable main contrib non-free"
+
+    - name: General | Install APT keys for Mopidy
+      shell: wget -q -O - https://apt.mopidy.com/mopidy.gpg | apt-key add -
+
+    - name: General | Install required packages.
+      apt: pkg={{ item }} state=installed update_cache=yes force=yes
+      tags: common
+      with_items:
+        - mopidy
+        - pulseaudio
+        
+    - name: General | Clean caches
+      shell: apt-get autoclean
+      
+    - name: General | Clean caches
+      shell: rm -rf /tmp/* /var/tmp/*
