@@ -7,14 +7,16 @@ prepare:
 pre: 
 	test -s /usr/bin/qemu-arm-static || { echo "Please install qemu-arm-static! Exiting..."; exit 1; }
 	cp -f /usr/bin/qemu-arm-static mopidy_chroot/usr/bin
-	@mount -t proc /proc mopidy_chroot/proc/ || true
-	@mount --rbind /sys mopidy_chroot/sys/ || true
+	chroot mopidy_chroot mount -t proc /proc /proc
+	chroot mopidy_chroot mount -t sysfs sysfs /sys
 	@mount --rbind /dev mopidy_chroot/dev/ || true
-
+	@mount --rbind /run mopidy_chroot/run/ || true
+	
 post:
-	@umount -lf mopidy_chroot/proc/ || true
-	@umount -lf mopidy_chroot/sys/ || true
+	chroot mopidy_chroot umount /sys
+	chroot mopidy_chroot umount /proc
 	@umount -lf mopidy_chroot/dev/ || true
+	@umount -lf mopidy_chroot/run/ || true
 	rm mopidy_chroot/usr/bin/qemu-arm-static || true
 
 deboostrap:
