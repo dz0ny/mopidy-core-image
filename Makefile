@@ -1,5 +1,5 @@
 prepare:
-	rm -rf mkdir mopidy_chroot
+	rm -rf mopidy_chroot
 	test -s vivid-core-armhf.tar.gz || { wget http://cdimage.ubuntu.com/ubuntu-core/daily/current/vivid-core-armhf.tar.gz; }
 	mkdir mopidy_chroot
 	tar xvf vivid-core-armhf.tar.gz -C mopidy_chroot/ || true
